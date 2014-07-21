@@ -29,10 +29,12 @@ gem 'spring',        group: :development
 group :development, :test do
   gem 'spork'
   gem 'rspec-rails'
-  gem 'cucumber'
-  gem 'database_cleaner'
 end
 
+group :test do
+  gem 'cucumber-rails'
+  gem 'database_cleaner'
+end
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
