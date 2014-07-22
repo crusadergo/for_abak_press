@@ -8,7 +8,10 @@ describe PagesController do
       get :add
       expect(assigns[:page]).to eq(page)
     end
-    it 'renders new template'
+    it 'renders new template' do
+      get :add
+      expect(response).to render_template :add
+    end
   end
 
   describe 'POST /create' do
