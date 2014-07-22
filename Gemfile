@@ -26,14 +26,19 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
 
+gem 'haml'
+
 group :development, :test do
-  gem 'spork'
-  gem 'rspec-rails'
+  # gem 'spork', github: 'CrusaderGo/spork', branch: 'rspec3_runner'
+  gem 'spork-rails'
+  gem 'rspec-rails', '< 2.99'
+  # gem 'factory_girl_rails'
 end
 
 group :test do
-  gem 'cucumber-rails'
+  gem 'cucumber-rails', require: false
   gem 'database_cleaner'
+  gem 'shoulda-matchers', require: false
 end
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
