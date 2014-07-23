@@ -4,16 +4,8 @@ class PagesController < ApplicationController
     @page = Page.new
 
     if params.has_key?(:pathee)
-      names = params[:pathee].split('/')
 
-      names.each do |name|
-        unless Page.exists?(name: name)
-          render text: 'Page with name ' + name + ' does not exist' # todo
-          return
-        end
-      end
-
-      page = Page.find_by_name names.last
+      page = find_page(params)
       if page
         @page.parent = page
       else
@@ -23,20 +15,22 @@ class PagesController < ApplicationController
   end
 
   def create
-    permitted_params = page_params
-    @page = Page.new(permitted_params)
+    @page = Page.new(page_params)
     if @page.save
-      if permitted_params[:parent_id].nil?
-        redirect_to '/'
-      end
-      parent_page = Page.find_by_id(permitted_params[:parent_id])
-      if parent_page.nil?
-        redirect_to '/'
-      else
-        redirect_to parent_page.url
-      end
+      redirect_to @page.url
     else
       redirect_to '/'
+    end
+  end
+
+  def show
+    if params.has_key?(:pathee)
+      @page = find_page(params)
+      if @page.nil?
+        render text: 'Page not found'
+      end
+    else
+      render :root_page
     end
   end
 
@@ -50,6 +44,19 @@ class PagesController < ApplicationController
     permitted
   end
 
+  def find_page(params)
+    return nil if params[:pathee].nil?
+
+    names = params[:pathee].split('/')
+
+    names.each do |name|
+      unless Page.exists?(name: name)
+        nil
+      end
+    end
+
+    Page.find_by_name names.last
+  end
   # def prepare_page_params
   #   if params[:page] && params[:page][:parent_id]
   #     params[:page][:parent_id] = params[:page][:parent_id].to_i
