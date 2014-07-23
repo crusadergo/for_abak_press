@@ -30,9 +30,13 @@ class PagesController < ApplicationController
         render text: 'Page not found'
       end
     else
+      @pages = Page.where parent: 0
+      # render json: @pages
       render :root_page
     end
   end
+
+
 
   private
 

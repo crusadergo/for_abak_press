@@ -1,0 +1,5 @@
+.children
+  - unless pages.empty?
+    - pages.each do |page|
+      =link_to page.title, page.url
+      = render 'children', pages: page.children

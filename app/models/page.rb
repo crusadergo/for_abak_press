@@ -10,4 +10,9 @@ class Page < ActiveRecord::Base
       parent.url + _url
     end
   end
+
+  def children
+    Page.where parent: self
+  end
+
 end
