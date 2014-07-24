@@ -1,69 +1,73 @@
 class PagesController < ApplicationController
 
+  before_action :decode_path, on: [:add, :edit, :show]
+
   def add
+    unless valid_path?(params[:pathee])
+      render text: 'not found'
+    end
+
     @page = Page.new
 
-    if params.has_key?(:pathee)
+    unless params[:pathee].blank?
+      page = find_page(params[:pathee])
 
-      page = find_page(params)
-      if page
-        @page.parent = page
-      else
-        render text: 'page not found'
+      unless page
+        render text: 'not found'
       end
+
+      @page.parent = page
     end
   end
 
   def create
     @page = Page.new(page_params)
     if @page.save
-      redirect_to @page.url
+      redirect_to URI.encode(@page.url)
     else
       redirect_to '/'
     end
   end
 
   def show
-    if params.has_key?(:pathee)
-      @page = find_page(params)
-      if @page.nil?
-        render text: 'Page not found'
-      end
-    else
+    unless valid_path?(params[:pathee])
+      render text: 'not found'
+    end
+
+    if params[:pathee].blank?
       @pages = Page.where parent: 0
-      # render json: @pages
       render :root_page
+    else
+      @page = find_page(params[:pathee])
+
+      unless @page
+        render text: 'not found'
+      end
     end
   end
-
-
 
   private
 
+  def decode_path
+    if params[:pathee].nil?
+      params[:pathee] = ''
+    else
+      params[:pathee] = URI.decode(params[:pathee])
+    end
+  end
+
   def page_params
     permitted = params.require(:page).permit(:name, :title,:body, :parent_id)
-    if permitted[:parent_id].is_a? String
-      permitted[:parent_id] = permitted[:parent_id].to_i
-    end
+    permitted[:parent_id] = permitted[:parent_id].to_i
     permitted
   end
 
-  def find_page(params)
-    return nil if params[:pathee].nil?
-
-    names = params[:pathee].split('/')
-
-    names.each do |name|
-      unless Page.exists?(name: name)
-        nil
-      end
-    end
-
-    Page.find_by_name names.last
+  def find_page(path)
+    Page.find_by_url('/' + path)
   end
-  # def prepare_page_params
-  #   if params[:page] && params[:page][:parent_id]
-  #     params[:page][:parent_id] = params[:page][:parent_id].to_i
-  #   end
-  # end
+
+  def valid_path?(path)
+    !!( path =~ /^[a-zA-Z0-9_а-яА-ЯёЁ\/]*$/ )
+  end
+
 end
