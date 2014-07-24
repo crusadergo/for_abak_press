@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140722150819) do
+ActiveRecord::Schema.define(version: 20140724145525) do
 
   create_table "pages", force: true do |t|
     t.string   "name"
@@ -20,6 +20,9 @@ ActiveRecord::Schema.define(version: 20140722150819) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "parent_id",  default: 0
+    t.string   "url"
   end
+
+  add_index "pages", ["url"], name: "index_pages_on_url"
 
 end
