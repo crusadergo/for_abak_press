@@ -1,5 +1,5 @@
 = @page.title
-= @page.body.html_safe
+= formatter(@page.body).html_safe
 %br
 = render 'children', pages: @pages
 = link_to 'Add', @page.url+'/add'

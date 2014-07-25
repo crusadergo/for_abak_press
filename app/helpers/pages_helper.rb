@@ -1,16 +1,7 @@
 module PagesHelper
 
-  def tree(pages, children_css_class)
-    return unless pages.empty?
-
-    capture_with_haml do
-      haml_tag :div, class: children_css_class do
-        pages.each do |page|
-          haml_tag :span, page.title
-          tree page.children, children_css_class
-        end
-      end
-    end
+  def formatter(text)
+    text.gsub(/\*\*((?:(?!\*\*).)*)\*\*/, '<b>\1</b>').gsub(/\\\\((?:(?!\\\\).)*)\\\\/, '<i>\1</i>')
   end
 
 end
