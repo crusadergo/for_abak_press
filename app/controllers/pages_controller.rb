@@ -21,9 +21,16 @@ class PagesController < ApplicationController
   end
 
   def create
-    @page = Page.new(page_params)
-    if @page.save
-      redirect_to URI.encode(@page.url)
+    permitted = page_params
+
+    unless valid_path?(permitted[:name])
+      render text: 'bad name'
+      return
+    end
+
+    page = Page.new(permitted)
+    if page.save
+      redirect_to URI.encode(page.url)
     else
       redirect_to '/'
     end
@@ -43,6 +50,8 @@ class PagesController < ApplicationController
       unless @page
         render text: 'not found'
       end
+
+      @pages = Page.where parent: @page
     end
   end
 
@@ -67,7 +76,7 @@ class PagesController < ApplicationController
   end
 
   def valid_path?(path)
-    !!( path =~ /^[a-zA-Z0-9_а-яА-ЯёЁ\/]*$/ )
+    !!( path =~ /\A[a-zA-Z0-9_а-яА-ЯёЁ\/]*\Z/ )
   end
 
 end

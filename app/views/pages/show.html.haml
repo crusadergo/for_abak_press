@@ -1,3 +1,6 @@
 = @page.title
 = @page.body
+%br
+= render 'children', pages: @pages
 = link_to 'Add', @page.url+'/add'
+= link_to 'Home', '/'
