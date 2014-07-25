@@ -55,6 +55,27 @@ class PagesController < ApplicationController
     end
   end
 
+  def edit
+    @page = find_page(params[:pathee])
+  end
+
+  def update
+    permitted = page_params
+
+    unless valid_path?(permitted[:name])
+      render text: 'bad name'
+      return
+    end
+
+    @page = Page.find (params[:id])
+
+    if @page.update(permitted)
+      redirect_to URI.encode @page.url
+    else
+      render :edit
+    end
+  end
+
   private
 
   def decode_path

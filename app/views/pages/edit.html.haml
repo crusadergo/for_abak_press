@@ -1,0 +1,11 @@
+= form_for @page do |f|
+  = f.label 'Имя страницы'
+  = f.text_field :name
+  %br
+  = f.label 'Название страницы'
+  = f.text_field :title
+  %br
+  = f.label 'Текст страницы'
+  = f.text_area :body
+  %br
+  = f.submit
