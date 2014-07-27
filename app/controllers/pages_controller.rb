@@ -21,18 +21,11 @@ class PagesController < ApplicationController
   end
 
   def create
-    permitted = page_params
-
-    unless valid_path?(permitted[:name])
-      render text: 'bad name'
-      return
-    end
-
-    page = Page.new(permitted)
+    page = Page.new(page_params)
     if page.save
       redirect_to URI.encode(page.url)
     else
-      redirect_to '/'
+      render :add
     end
   end
 
@@ -56,20 +49,13 @@ class PagesController < ApplicationController
   end
 
   def edit
-    @page = find_page(params[:pathee])
+    @page = find_page params[:pathee]
   end
 
   def update
-    permitted = page_params
+    @page = Page.find params[:id]
 
-    unless valid_path?(permitted[:name])
-      render text: 'bad name'
-      return
-    end
-
-    @page = Page.find (params[:id])
-
-    if @page.update(permitted)
+    if @page.update(page_params)
       redirect_to URI.encode @page.url
     else
       render :edit
